@@ -8,18 +8,46 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-
+class ViewController: UIViewController, WeatherDelegate {
+    
+    var weather = Weather()
+    
+    @IBOutlet weak var icon: UIImageView!
+    @IBAction func cityButton(_ sender: AnyObject) {
+        showCity()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        self.weather.delegate = self
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    func showCity() {
+        
+        let alert = UIAlertController(title: "Enter city name", message: nil, preferredStyle: .alert)
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let ok = UIAlertAction(title: "OK", style: .default) {
+            (action) -> Void in
+            
+            if let textField = alert.textFields?.first as? UITextField? {
+                self.weather.getWeatherForCity(city: (textField?.text)!)
+            }
+        }
+        
+        alert.addAction(cancel)
+        alert.addAction(ok)
+        alert.addTextField() {
+            (textField) -> Void in
+            textField.placeholder = "Enter city name here"
+        }
+        
+        self.present(alert, animated: true, completion: nil)
     }
-
+    
+    func updateWeatherInfo() {
+        print(weather.city)
+    }
 
 }
 
